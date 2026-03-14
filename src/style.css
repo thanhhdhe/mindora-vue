@@ -131,6 +131,16 @@ a {
   cursor: pointer;
 }
 
+.brand-logo {
+  height: 48px;
+  width: auto;
+  display: block;
+}
+
+/* .brand-logo-footer {
+  filter: brightness(0) invert(1);
+} */
+
 .nav {
   display: flex;
   align-items: center;
@@ -700,29 +710,59 @@ a {
   font-weight: 500;
 }
 
+
+.testimonial-carousel {
+  width: min(100%, 1160px);
+  margin-top: 16px;
+  overflow: hidden;
+  padding-top: 54px;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+}
+
 .testimonial-grid {
   width: 100%;
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 32px;
+  display: flex;
+}
+
+.testimonial-grid.dragging {
+  cursor: grabbing;
+}
+
+.testimonial-slide {
+  flex: 0 0 calc(100% / var(--visible-cards, 3));
+  padding: 0 12px;
 }
 
 .testimonial-card {
+  position: relative;
+  height: 100%;
   border: 1.5px solid var(--primary);
   border-radius: 12px;
-  padding: 24px 24px 20px;
+  padding: 60px 24px 20px;
   text-align: left;
   box-shadow: var(--shadow);
   background: #fff;
 }
-
+.break-line {
+    width: 100%;
+    height: 1px;
+    background: #D1D5DB;
+    margin: 16px 0;
+}
 .avatar {
-  width: 74px;
-  height: 74px;
+  border: 4px solid white;
+  position: absolute;
+  top: 0;
+  left: 24px;
+  width: 108px;
+  height: 108px;
   border-radius: 50%;
   object-fit: cover;
-  margin-top: -52px;
+  transform: translateY(-50%);
+  z-index: 1;
+  margin-top: 0;
   background: #fff;
 }
 
@@ -741,22 +781,32 @@ a {
 }
 
 .stars {
-  color: #eab308;
-  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 8px;
 }
 
+.star-icon {
+  width: 17px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
 .pagination-dots {
-  margin-top: 10px;
+  margin-top: 40px;
   display: flex;
   gap: 8px;
 }
 
-.pagination-dots span {
-  width: 7px;
-  height: 7px;
+.pagination-dots button {
+  border: 0;
+  padding: 0;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #c4c4c4;
+  cursor: pointer;
 }
 
 .pagination-dots .active {
@@ -949,7 +999,6 @@ a {
 
   .about-images,
   .product-grid,
-  .testimonial-grid,
   .value-grid,
   .featured-grid {
     grid-template-columns: 1fr;

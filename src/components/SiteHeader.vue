@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import logoMindora from '../assets/logo/logo_mindora.png'
 
 defineProps({
   menuItems: {
@@ -33,7 +34,9 @@ const closeMenu = () => {
   <header class="header">
     <div class="container header-inner">
       <div class="brand-area">
-        <button class="brand brand-btn" type="button" @click="navigateTo('home')">MINDORA</button>
+        <button class="brand brand-btn" type="button" @click="navigateTo('home')">
+          <img :src="logoMindora" alt="Mindora" class="brand-logo" />
+        </button>
 
         <nav class="nav header-desktop-nav">
           <button
@@ -73,7 +76,7 @@ const closeMenu = () => {
 
     <div v-if="isMenuOpen" class="mobile-menu-backdrop" @click="closeMenu">
       <aside class="mobile-menu" @click.stop>
-        <p class="brand mobile-brand">MINDORA</p>
+        <p class="brand mobile-brand"><img :src="logoMindora" alt="Mindora" class="brand-logo" /></p>
         <nav class="nav">
           <button
             v-for="item in menuItems"

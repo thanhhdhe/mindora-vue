@@ -1,4 +1,6 @@
 <script setup>
+import logoMindora from '../assets/logo/logo_mindora.png'
+
 defineProps({
   footerContact: {
     type: Array,
@@ -15,8 +17,8 @@ defineProps({
   <footer class="footer">
     <div class="container footer-inner">
       <div class="footer-brand-col">
-        <div class="brand footer-brand">MINDORA</div>
-        <p>Copyright © 2020 Nexcent ltd.</p>
+        <div class="brand footer-brand"><img :src="logoMindora" alt="Mindora" class="brand-logo brand-logo-footer" /></div>
+        <p>Copyright © 2026 Mindora.</p>
         <p>All rights reserved</p>
         <div class="socials">
           <span>IG</span><span>DR</span><span>TW</span><span>YT</span>

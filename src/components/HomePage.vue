@@ -1,16 +1,208 @@
 <script setup>
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import PreorderSection from './PreorderSection.vue'
 
-defineProps({
+const props = defineProps({
   heroMainImage: String,
   heroSmallImages: Array,
   aboutImage: String,
   guideImage: String,
   guideSteps: Array,
   productCards: Array,
-  testimonials: Array,
-  avatarImage: String
+  testimonials: Array
 })
+
+const VISIBLE_CARDS = 3
+
+const carouselRef = ref(null)
+const viewportCards = ref(VISIBLE_CARDS)
+const currentIndex = ref(VISIBLE_CARDS)
+const isTransitionEnabled = ref(true)
+const isDragging = ref(false)
+const dragStartX = ref(0)
+const dragDeltaX = ref(0)
+const dragPointerId = ref(null)
+
+const visibleCards = computed(() => {
+  const total = props.testimonials?.length ?? 0
+  return Math.min(viewportCards.value, Math.max(total, 1))
+})
+
+const canSlide = computed(() => (props.testimonials?.length ?? 0) > visibleCards.value)
+
+const extendedTestimonials = computed(() => {
+  const items = props.testimonials ?? []
+  const cloneCount = visibleCards.value
+
+  if (!canSlide.value) {
+    return items
+  }
+
+  const head = items.slice(0, cloneCount)
+  const tail = items.slice(-cloneCount)
+
+  return [...tail, ...items, ...head]
+})
+
+const dragOffsetPercent = computed(() => {
+  if (!isDragging.value || !carouselRef.value) {
+    return 0
+  }
+
+  return (dragDeltaX.value / carouselRef.value.clientWidth) * 100
+})
+
+const testimonialTrackStyle = computed(() => {
+  const baseTranslate = -((currentIndex.value * 100) / visibleCards.value)
+  const translate = baseTranslate + dragOffsetPercent.value
+
+  return {
+    transform: `translateX(${translate}%)`,
+    transition: isTransitionEnabled.value && !isDragging.value ? 'transform 0.35s ease' : 'none'
+  }
+})
+
+const activeDotIndex = computed(() => {
+  const total = props.testimonials?.length ?? 0
+
+  if (!total) {
+    return 0
+  }
+
+  if (!canSlide.value) {
+    return 0
+  }
+
+  const normalized = (currentIndex.value - visibleCards.value) % total
+  return normalized < 0 ? normalized + total : normalized
+})
+
+const resetTransitionAfterJump = async () => {
+  await nextTick()
+  requestAnimationFrame(() => {
+    isTransitionEnabled.value = true
+  })
+}
+
+const goToSlide = (index) => {
+  if (!canSlide.value) {
+    return
+  }
+
+  isTransitionEnabled.value = true
+  currentIndex.value = visibleCards.value + index
+}
+
+const goNext = () => {
+  if (!canSlide.value) {
+    return
+  }
+
+  isTransitionEnabled.value = true
+  currentIndex.value += 1
+}
+
+const goPrev = () => {
+  if (!canSlide.value) {
+    return
+  }
+
+  isTransitionEnabled.value = true
+  currentIndex.value -= 1
+}
+
+const onPointerDown = (event) => {
+  if (!canSlide.value) {
+    return
+  }
+
+  event.currentTarget.setPointerCapture(event.pointerId)
+  isDragging.value = true
+  dragStartX.value = event.clientX
+  dragDeltaX.value = 0
+  dragPointerId.value = event.pointerId
+}
+
+const onPointerMove = (event) => {
+  if (!isDragging.value || dragPointerId.value !== event.pointerId) {
+    return
+  }
+
+  dragDeltaX.value = event.clientX - dragStartX.value
+}
+
+const onPointerEnd = (event) => {
+  if (!isDragging.value || dragPointerId.value !== event.pointerId) {
+    return
+  }
+
+  const moved = dragDeltaX.value
+  const threshold = 50
+
+  isDragging.value = false
+  dragPointerId.value = null
+  dragDeltaX.value = 0
+
+  if (Math.abs(moved) <= threshold) {
+    return
+  }
+
+  if (moved < 0) {
+    goNext()
+    return
+  }
+
+  goPrev()
+}
+
+const onTrackTransitionEnd = () => {
+  if (!canSlide.value) {
+    return
+  }
+
+  const total = props.testimonials.length
+  const cloneCount = visibleCards.value
+
+  if (currentIndex.value >= total + cloneCount) {
+    isTransitionEnabled.value = false
+    currentIndex.value = cloneCount
+    resetTransitionAfterJump()
+    return
+  }
+
+  if (currentIndex.value < cloneCount) {
+    isTransitionEnabled.value = false
+    currentIndex.value = total + cloneCount - 1
+    resetTransitionAfterJump()
+  }
+}
+
+const updateViewportCards = () => {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  viewportCards.value = window.innerWidth <= 992 ? 1 : VISIBLE_CARDS
+}
+
+onMounted(() => {
+  updateViewportCards()
+  window.addEventListener('resize', updateViewportCards)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateViewportCards)
+})
+
+watch(
+  () => [props.testimonials?.length ?? 0, visibleCards.value],
+  () => {
+    isTransitionEnabled.value = false
+    currentIndex.value = canSlide.value ? visibleCards.value : 0
+    resetTransitionAfterJump()
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -100,16 +292,59 @@ defineProps({
           Chúng tôi đồng hành cùng phụ huynh và nhà trường để mang trải nghiệm học tập trực quan, sinh động và dễ tiếp cận cho trẻ em thông qua đồ chơi khoa học tích hợp AR.
         </p>
 
-        <div class="testimonial-grid">
-          <article v-for="(item, index) in testimonials" :key="index" class="testimonial-card">
-            <img :src="avatarImage" alt="Customer" class="avatar" />
-            <p class="testimonial-text">{{ item.text }}</p>
-            <div class="testimonial-name">{{ item.name }}</div>
-            <div class="stars">{{ '★'.repeat(item.stars) }}</div>
-          </article>
+        <div
+          ref="carouselRef"
+          class="testimonial-carousel"
+          :style="{ '--visible-cards': visibleCards }"
+          @pointerdown="onPointerDown"
+          @pointermove="onPointerMove"
+          @pointerup="onPointerEnd"
+          @pointercancel="onPointerEnd"
+        >
+          <div
+            class="testimonial-grid"
+            :class="{ dragging: isDragging }"
+            :style="testimonialTrackStyle"
+            @transitionend="onTrackTransitionEnd"
+          >
+            <div v-for="(item, index) in extendedTestimonials" :key="`${item.name}-${index}`" class="testimonial-slide">
+              <article class="testimonial-card">
+                <img :src="item.avatar" :alt="item.name" class="avatar" draggable="false" />
+                <p class="testimonial-text">{{ item.text }}</p>
+                <!-- add break line has background: #D1D5DB; -->
+                <div class="break-line"></div>
+                <div class="testimonial-name">{{ item.name }}</div>
+                <div class="stars" :aria-label="`${item.stars} sao`">
+                  <svg
+                    v-for="starIndex in item.stars"
+                    :key="starIndex"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="17"
+                    height="16"
+                    viewBox="0 0 17 16"
+                    fill="none"
+                    aria-hidden="true"
+                    class="star-icon"
+                  >
+                    <path
+                      d="M5.74007 5.14618C5.74007 5.14618 2.56535 5.49769 0.447528 5.7327C0.256643 5.7558 0.0878601 5.88335 0.0245665 6.07719C-0.038727 6.27102 0.0245664 6.47289 0.165219 6.60044C1.73852 8.03563 4.10248 10.1849 4.10248 10.1849C4.10047 10.1849 3.45347 13.3114 3.02348 15.3973C2.98731 15.5862 3.05562 15.786 3.22039 15.9055C3.38415 16.0251 3.59513 16.0271 3.7609 15.9337C5.61349 14.8811 8.38836 13.2983 8.38836 13.2983C8.38836 13.2983 11.1642 14.8811 13.0138 15.9347C13.1826 16.0271 13.3936 16.0251 13.5573 15.9055C13.7221 15.786 13.7904 15.5862 13.7532 15.3984C13.3232 13.3114 12.6772 10.1849 12.6772 10.1849C12.6772 10.1849 15.0412 8.03563 16.6145 6.60346C16.7552 6.47189 16.8174 6.27002 16.7552 6.07719C16.6929 5.88436 16.5241 5.75681 16.3332 5.73471C14.2154 5.49769 11.0397 5.14618 11.0397 5.14618C11.0397 5.14618 9.72355 2.23563 8.84648 0.295273C8.7641 0.121524 8.5913 0 8.38836 0C8.18542 0 8.01161 0.122528 7.93325 0.295273C7.05517 2.23563 5.74007 5.14618 5.74007 5.14618Z"
+                      fill="#FF912B"
+                    />
+                  </svg>
+                </div>
+              </article>
+            </div>
+          </div>
         </div>
         <div class="pagination-dots">
-          <span></span><span class="active"></span><span></span>
+          <button
+            v-for="(item, index) in testimonials"
+            :key="item.name"
+            type="button"
+            :class="{ active: activeDotIndex === index }"
+            :aria-label="`Xem đánh giá ${index + 1}`"
+            @click="goToSlide(index)"
+          ></button>
         </div>
       </div>
     </section>
