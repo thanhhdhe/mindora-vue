@@ -1,8 +1,15 @@
-const heroMainImage = 'https://www.figma.com/api/mcp/asset/b787c4e3-c540-4eca-a674-33745238ca8b'
+import smallImage from '@/assets/images/small_image_3.png'
+import bigHeroImage from '@/assets/images/big_hero_image.png'
+import avatar1 from '@/assets/images/feedback/avatar1.jpg'
+import avatar2 from '@/assets/images/feedback/avatar2.jpg'
+import avatar3 from '@/assets/images/feedback/avatar3.jpg'
+import avatar4 from '@/assets/images/feedback/avatar4.jpg'
+import avatar5 from '@/assets/images/feedback/avatar5.jpg'
+const heroMainImage = bigHeroImage
 const heroSmallImages = [
-  'https://www.figma.com/api/mcp/asset/bef60b99-063f-4348-8f67-fc156bdec6be',
-  'https://www.figma.com/api/mcp/asset/853e2bea-7f3a-4170-abb2-7889866fe2ef',
-  'https://www.figma.com/api/mcp/asset/fac483ec-3699-45fd-a203-f4f05f41fd5b'
+  smallImage,
+  smallImage,
+  smallImage
 ]
 const productImage = 'https://www.figma.com/api/mcp/asset/4827fdfe-42fa-4356-8fb7-176396a29c63'
 const guideImage = 'https://www.figma.com/api/mcp/asset/7f8abdc6-1ce3-4be2-8052-1a7a201265e8'
@@ -53,34 +60,39 @@ export const featuredCards = Array.from({ length: 12 }).map(() => ({
 
 export const testimonials = [
   {
-    name: 'Nguyễn Thu Hà – Giáo viên Tiểu học',
+    name: 'Nguyễn Thu Hà',
+    title: 'Giáo viên Tiểu học',
     text: '“Sau khi thử nghiệm sản phẩm của Mindora trong một số tiết học khoa học, tôi nhận thấy học sinh hứng thú hơn rất nhiều so với các tiết học thông thường. Việc kết hợp mô hình gỗ với công nghệ AR giúp các em dễ dàng hình dung những kiến thức trừu tượng. Đây là một công cụ hỗ trợ giảng dạy khá hiệu quả cho giáo viên.”',
     stars: 5,
-    avatar: 'https://i.pravatar.cc/120?img=32'
+    avatar: avatar1
   },
   {
-    name: 'Trần Minh Hoàng – Phụ huynh',
+    name: 'Trần Minh Hoàng',
+    title: 'Phụ huynh',
     text: '“Con tôi rất thích sản phẩm của Mindora vì vừa được chơi mô hình, vừa khám phá thêm nhiều thông tin thú vị qua ứng dụng AR. Tôi thấy cách học này giúp trẻ tiếp cận kiến thức khoa học một cách tự nhiên và không bị áp lực. Đây là một sản phẩm đáng để phụ huynh cân nhắc.”',
     stars: 5,
-    avatar: 'https://i.pravatar.cc/120?img=12'
+    avatar: avatar2
   },
   {
-    name: 'Lê Phương Anh – Giáo viên STEM',
+    name: 'Lê Phương Anh',
+    title: 'Giáo viên STEM',
     text: '“Tôi thấy Mindora đã kết hợp khá sáng tạo giữa đồ chơi giáo dục truyền thống và công nghệ hiện đại. Thiết kế gỗ chắc chắn, an toàn cho trẻ em, trong khi nội dung AR lại tạo thêm sự sinh động cho hoạt động học tập. Sản phẩm phù hợp để tổ chức các hoạt động trải nghiệm và học theo nhóm.”',
     stars: 5,
-    avatar: 'https://i.pravatar.cc/120?img=47'
+    avatar: avatar3
   },
   {
-    name: 'Đỗ Thảo Linh – Giáo viên mầm non',
+    name: 'Đỗ Thảo Linh',
+    title: 'Giáo viên mầm non',
     text: '“Tôi đánh giá cao tính trực quan của các sản phẩm trong việc hỗ trợ giảng dạy các nội dung khoa học cơ bản. Khi các con được quan sát mô hình và tương tác với AR, các con dễ hiểu bài hơn và chủ động đặt nhiều câu hỏi hơn trong lớp. Điều này giúp tiết học trở nên sôi động và hiệu quả.”',
     stars: 5,
-    avatar: 'https://i.pravatar.cc/120?img=5'
+    avatar: avatar4
   },
   {
-    name: 'Phạm Quốc Khánh – Phụ huynh học sinh',
+    name: 'Phạm Quốc Khánh',
+    title: 'Phụ huynh học sinh',
     text: '“Tôi khá ấn tượng với việc Mindora sử dụng chất liệu gỗ an toàn và thân thiện với trẻ em. Phần AR cũng được thiết kế dễ sử dụng nên trẻ có thể tự khám phá mà không gặp nhiều khó khăn. Sản phẩm vừa mang tính giáo dục vừa tạo được sự hứng thú cho trẻ trong quá trình học tập.”',
     stars: 5,
-    avatar: 'https://i.pravatar.cc/120?img=68'
+    avatar: avatar5
   }
 ]
 
