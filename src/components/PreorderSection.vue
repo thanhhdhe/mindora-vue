@@ -6,10 +6,10 @@
       <p>Hoặc điền vào mẫu thông tin dưới đây của chúng tôi</p>
 
       <form class="preorder-form" @submit.prevent>
-        <input type="text" placeholder="Name" />
+        <input type="text" placeholder="Họ và tên" />
         <input type="email" placeholder="Email" />
-        <input type="tel" placeholder="Phone" />
-        <textarea placeholder="Your Message" rows="5"></textarea>
+        <input type="tel" placeholder="Số điện thoại" />
+        <textarea placeholder="Lời nhắn" rows="5"></textarea>
         <button class="btn btn-orange" type="submit">ĐĂNG KÝ NGAY</button>
       </form>
     </div>

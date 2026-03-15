@@ -252,15 +252,13 @@ watch(
     <section class="section-beige guide ">
       <div class="container guide-inner centered-block">
         <div class="guide-visual">
-          <div class="phone-shell">
-            <img :src="guideImage" alt="Guide phone" />
-          </div>
+          <img :src="guideImage" alt="Guide phone" class="guide-image"/>
         </div>
         <div class="guide-content">
           <h2><span>Hướng dẫn</span> sử dụng</h2>
           <div class="guide-list">
             <article v-for="step in guideSteps" :key="step.title" class="guide-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 34 34" fill="none">
+              <svg class="guide-svg" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 34 34" fill="none">
                 <path
                   d="M16.6667 33.3333C7.46167 33.3333 0 25.8717 0 16.6667C0 7.46167 7.46167 0 16.6667 0C25.8717 0 33.3333 7.46167 33.3333 16.6667C33.3333 25.8717 25.8717 33.3333 16.6667 33.3333ZM15.005 23.3333L26.7883 11.5483L24.4317 9.19167L15.005 18.62L10.29 13.905L7.93333 16.2617L15.005 23.3333Z"
                   fill="#FF912B" />

@@ -519,6 +519,9 @@ a {
   align-items: center;
   position: relative;
 }
+.guide-image {
+  max-width: 100%;
+}
 
 .phone-shell {
   width: 235px;
@@ -761,7 +764,7 @@ a {
 }
 
 .avatar {
-  border: 4px solid white;
+  border: 6px solid #e5e5e5;
   position: absolute;
   top: 0;
   left: 24px;
@@ -1175,6 +1178,11 @@ a {
   .guide-item {
     grid-template-columns: 24px 1fr;
     gap: 12px;
+  }
+
+  .guide-svg {
+    width: 24px;
+    height: 24px;
   }
 
   .guide-item h3 {

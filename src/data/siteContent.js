@@ -5,6 +5,11 @@ import avatar2 from '@/assets/images/feedback/avatar2.jpg'
 import avatar3 from '@/assets/images/feedback/avatar3.jpg'
 import avatar4 from '@/assets/images/feedback/avatar4.jpg'
 import avatar5 from '@/assets/images/feedback/avatar5.jpg'
+import value01 from '@/assets/images/valueIcon/value_1.svg'
+import value02 from '@/assets/images/valueIcon/value_2.svg'
+import value03 from '@/assets/images/valueIcon/value_3.svg'
+import value04 from '@/assets/images/valueIcon/value_4.svg'
+import phone from '@/assets/images/phone.png'
 const heroMainImage = bigHeroImage
 const heroSmallImages = [
   smallImage,
@@ -12,15 +17,15 @@ const heroSmallImages = [
   smallImage
 ]
 const productImage = 'https://www.figma.com/api/mcp/asset/4827fdfe-42fa-4356-8fb7-176396a29c63'
-const guideImage = 'https://www.figma.com/api/mcp/asset/7f8abdc6-1ce3-4be2-8052-1a7a201265e8'
+const guideImage = phone
 const aboutImage = 'https://www.figma.com/api/mcp/asset/bef60b99-063f-4348-8f67-fc156bdec6be'
 const aboutPageImage = 'https://www.figma.com/api/mcp/asset/d41456b7-464f-4c85-b8af-b4c21e72d2a7'
 const featuredPageImage = 'https://www.figma.com/api/mcp/asset/a0276e73-47d1-420d-b783-1634b9deca23'
 const arBackgroundImage = 'https://www.figma.com/api/mcp/asset/41a644a9-3b81-493e-9c2a-7fc3b4d7a158'
-const valueIcon01 = 'https://www.figma.com/api/mcp/asset/d33f92f2-ad56-4764-a2b7-273186b5ea6d'
-const valueIcon02 = 'https://www.figma.com/api/mcp/asset/d7a03a06-0061-4aad-9cb3-f1c4d6e5b90f'
-const valueIcon03 = 'https://www.figma.com/api/mcp/asset/c502c73f-4a20-416d-81e9-7ba04431ee38'
-const valueIcon04 = 'https://www.figma.com/api/mcp/asset/794d4ed9-7350-4372-89ca-672fd729e8c4'
+const valueIcon01 = value01
+const valueIcon02 = value02
+const valueIcon03 = value03
+const valueIcon04 = value04
 
 export const menuItems = [
   { key: 'home', label: 'Trang chủ', path: '/' },
