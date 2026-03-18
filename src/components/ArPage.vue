@@ -6,7 +6,10 @@ defineProps({
 })
 
 const TARGET_COUNT = 20
-const availableVideos = ['/ar/life_of_butterfly.mp4', '/ar/solar_system.mp4']
+const availableVideos = ['/ar/solar_system.mp4', '/ar/life_of_butterfly.mp4']
+const AR_IMMERSIVE_CLASS = 'ar-immersive-mode'
+const TARGET_LOST_GRACE_MS = 450
+const SOURCE_SWITCH_COOLDOWN_MS = 220
 
 const showPopup = ref(true)
 const hasStarted = ref(false)
@@ -17,6 +20,17 @@ const errorMessage = ref('')
 const sceneRef = ref(null)
 const videoRef = ref(null)
 const canPlayHandler = ref(null)
+const lostPauseTimer = ref(null)
+const currentVideoSrc = ref('')
+const lastSourceSwitchAt = ref(0)
+
+const setChromeHidden = (hidden) => {
+  if (typeof document === 'undefined') {
+    return
+  }
+
+  document.body.classList.toggle(AR_IMMERSIVE_CLASS, hidden)
+}
 
 const getMainVideo = () => videoRef.value ?? document.getElementById('main-video')
 
@@ -36,6 +50,13 @@ const clearCanPlayHandler = () => {
   canPlayHandler.value = null
 }
 
+const clearLostPauseTimer = () => {
+  if (lostPauseTimer.value) {
+    clearTimeout(lostPauseTimer.value)
+    lostPauseTimer.value = null
+  }
+}
+
 const cleanupVideo = () => {
   const video = getMainVideo()
 
@@ -44,10 +65,12 @@ const cleanupVideo = () => {
   }
 
   clearCanPlayHandler()
+  clearLostPauseTimer()
   video.pause()
   video.currentTime = 0
   video.removeAttribute('src')
   video.load()
+  currentVideoSrc.value = ''
 }
 
 const startAR = async () => {
@@ -69,6 +92,7 @@ const startAR = async () => {
     userInteracted.value = true
     hasStarted.value = true
     showPopup.value = false
+    setChromeHidden(true)
 
     await nextTick()
     const video = getMainVideo()
@@ -79,6 +103,7 @@ const startAR = async () => {
   } catch (error) {
     console.warn('AR start error:', error)
     errorMessage.value = 'Không thể truy cập camera. Vui lòng kiểm tra quyền camera và thử lại.'
+    setChromeHidden(false)
   } finally {
     isStarting.value = false
   }
@@ -91,16 +116,23 @@ const onTargetFound = (targetIndex) => {
     return
   }
 
-  const nextSrc = resolveVideoByTarget(targetIndex)
+  clearLostPauseTimer()
 
-  if (video.getAttribute('src') !== nextSrc) {
+  const nextSrc = resolveVideoByTarget(targetIndex)
+  const now = typeof performance !== 'undefined' ? performance.now() : Date.now()
+  const withinSwitchCooldown = now - lastSourceSwitchAt.value < SOURCE_SWITCH_COOLDOWN_MS
+
+  if (withinSwitchCooldown && currentVideoSrc.value !== nextSrc) {
+    return
+  }
+
+  if (currentVideoSrc.value !== nextSrc) {
+    lastSourceSwitchAt.value = now
+    currentVideoSrc.value = nextSrc
+
     clearCanPlayHandler()
     video.pause()
-    video.removeAttribute('src')
-    video.load()
-
-    video.setAttribute('src', nextSrc)
-    video.load()
+    video.src = nextSrc
 
     const playWhenReady = () => {
       video
@@ -116,14 +148,21 @@ const onTargetFound = (targetIndex) => {
         })
     }
 
-    canPlayHandler.value = playWhenReady
-    video.addEventListener('canplay', playWhenReady, { once: true })
+    if (video.readyState >= 3) {
+      playWhenReady()
+    } else {
+      canPlayHandler.value = playWhenReady
+      video.addEventListener('canplay', playWhenReady, { once: true })
+      video.load()
+    }
     return
   }
 
-  video.play().catch((error) => {
-    console.warn('Replay error:', error)
-  })
+  if (video.paused) {
+    video.play().catch((error) => {
+      console.warn('Replay error:', error)
+    })
+  }
 }
 
 const onTargetLost = () => {
@@ -133,12 +172,16 @@ const onTargetLost = () => {
     return
   }
 
-  clearCanPlayHandler()
-  video.pause()
-  video.currentTime = 0
+  clearLostPauseTimer()
+  lostPauseTimer.value = setTimeout(() => {
+    clearCanPlayHandler()
+    video.pause()
+    lostPauseTimer.value = null
+  }, TARGET_LOST_GRACE_MS)
 }
 
 onBeforeUnmount(() => {
+  setChromeHidden(false)
   cleanupVideo()
 
   const sceneEl = sceneRef.value
@@ -167,7 +210,7 @@ onBeforeUnmount(() => {
       <div v-if="hasStarted" id="ar-container" class="my-page">
         <a-scene
           ref="sceneRef"
-          mindar-image="imageTargetSrc: /targets.mind; maxTrack: 1"
+          mindar-image="imageTargetSrc: /targets.mind; maxTrack: 1; missTolerance: 8; filterMinCF: 0.001; filterBeta: 0.01"
           color-space="sRGB"
           renderer="colorManagement: true, physicallyCorrectLights"
           vr-mode-ui="enabled: false"
@@ -213,13 +256,17 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+
 #ar-container {
   position: absolute;
   inset: 0;
-  width: 100vw !important;
-  height: 100vh !important;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   z-index: 0;
+}
+.ar-immersive-mode .ar-experience {
+  height: 98vh;
 }
 .my-page :deep(video) {
   max-width: none !important;
@@ -251,4 +298,11 @@ onBeforeUnmount(() => {
 video[autoplay][muted][playsinline] {
   max-width: none !important;
 }
+
+.ar-immersive-mode .header,
+.ar-immersive-mode .footer {
+  display: none !important;
+}
+
+
 </style>
