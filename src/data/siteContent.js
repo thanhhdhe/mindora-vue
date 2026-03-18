@@ -1,4 +1,6 @@
-import smallImage from '@/assets/images/small_image_3.png'
+import smallImage3 from '@/assets/images/small_image_3.png'
+import smallImage2 from '@/assets/images/small_image_2.png'
+import smallImage1 from '@/assets/images/small_image_1.png'
 import bigHeroImage from '@/assets/images/big_hero_image.png'
 import avatar1 from '@/assets/images/feedback/avatar1.jpg'
 import avatar2 from '@/assets/images/feedback/avatar2.jpg'
@@ -10,22 +12,28 @@ import value02 from '@/assets/images/valueIcon/value_2.svg'
 import value03 from '@/assets/images/valueIcon/value_3.svg'
 import value04 from '@/assets/images/valueIcon/value_4.svg'
 import phone from '@/assets/images/phone.png'
+import about from '@/assets/images/about.png'
+import aboutPage from '@/assets/images/about_page.png'
+import vision1 from '@/assets/images/vision1.png'
+import vision2 from '@/assets/images/vision2.png'
 const heroMainImage = bigHeroImage
 const heroSmallImages = [
-  smallImage,
-  smallImage,
-  smallImage
+  smallImage1,
+  smallImage2,
+  smallImage3
 ]
 const productImage = 'https://www.figma.com/api/mcp/asset/4827fdfe-42fa-4356-8fb7-176396a29c63'
 const guideImage = phone
-const aboutImage = 'https://www.figma.com/api/mcp/asset/bef60b99-063f-4348-8f67-fc156bdec6be'
-const aboutPageImage = 'https://www.figma.com/api/mcp/asset/d41456b7-464f-4c85-b8af-b4c21e72d2a7'
+const aboutImage = about
+const aboutPageImage = aboutPage
 const featuredPageImage = 'https://www.figma.com/api/mcp/asset/a0276e73-47d1-420d-b783-1634b9deca23'
 const arBackgroundImage = 'https://www.figma.com/api/mcp/asset/41a644a9-3b81-493e-9c2a-7fc3b4d7a158'
 const valueIcon01 = value01
 const valueIcon02 = value02
 const valueIcon03 = value03
 const valueIcon04 = value04
+const visionImage1 = vision1
+const visionImage2 = vision2
 
 export const menuItems = [
   { key: 'home', label: 'Trang chủ', path: '/' },
@@ -102,9 +110,9 @@ export const testimonials = [
 ]
 
 export const footerContact = [
-  'SacVietAR@gmail.com',
-  'Số 50 ngách 59/93 Mễ Trì, Nam Từ Liêm, Hà Nội, Vietnam',
-  '0869346214'
+  'mindoratoys.vn@gmail.com',
+  '353 Đ Xuân Thuỷ, Dịch Vọng Hậu , Cầu Giấy, Hà Nội',
+  '091 449 56 22'
 ]
 
 export const footerInfo = ['Về chúng tôi', 'Thông tin liên hệ', 'Hỗ trợ khách hàng', 'Chính sách bảo mật thông tin']
@@ -140,6 +148,7 @@ export const homePageProps = {
   heroMainImage,
   heroSmallImages,
   aboutImage,
+  aboutPageImage,
   guideImage,
   guideSteps,
   productCards,
@@ -147,8 +156,11 @@ export const homePageProps = {
 }
 
 export const aboutPageProps = {
+  aboutImage,
   aboutPageImage,
-  coreValues
+  coreValues,
+  visionImage1,
+  visionImage2
 }
 
 export const featuredPageProps = {

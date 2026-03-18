@@ -1,20 +1,254 @@
 <script setup>
+import { nextTick, onBeforeUnmount, ref } from 'vue'
+
 defineProps({
   arBackgroundImage: String
+})
+
+const TARGET_COUNT = 20
+const availableVideos = ['/ar/life_of_butterfly.mp4', '/ar/solar_system.mp4']
+
+const showPopup = ref(true)
+const hasStarted = ref(false)
+const isStarting = ref(false)
+const userInteracted = ref(false)
+const errorMessage = ref('')
+
+const sceneRef = ref(null)
+const videoRef = ref(null)
+const canPlayHandler = ref(null)
+
+const getMainVideo = () => videoRef.value ?? document.getElementById('main-video')
+
+const resolveVideoByTarget = (targetIndex) => {
+  const normalizedIndex = Math.abs(targetIndex) % availableVideos.length
+  return availableVideos[normalizedIndex]
+}
+
+const clearCanPlayHandler = () => {
+  const video = getMainVideo()
+
+  if (!video || !canPlayHandler.value) {
+    return
+  }
+
+  video.removeEventListener('canplay', canPlayHandler.value)
+  canPlayHandler.value = null
+}
+
+const cleanupVideo = () => {
+  const video = getMainVideo()
+
+  if (!video) {
+    return
+  }
+
+  clearCanPlayHandler()
+  video.pause()
+  video.currentTime = 0
+  video.removeAttribute('src')
+  video.load()
+}
+
+const startAR = async () => {
+  if (isStarting.value) {
+    return
+  }
+
+  errorMessage.value = ''
+  isStarting.value = true
+
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error('Trình duyệt không hỗ trợ camera API')
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    stream.getTracks().forEach((track) => track.stop())
+
+    userInteracted.value = true
+    hasStarted.value = true
+    showPopup.value = false
+
+    await nextTick()
+    const video = getMainVideo()
+
+    if (video) {
+      video.load()
+    }
+  } catch (error) {
+    console.warn('AR start error:', error)
+    errorMessage.value = 'Không thể truy cập camera. Vui lòng kiểm tra quyền camera và thử lại.'
+  } finally {
+    isStarting.value = false
+  }
+}
+
+const onTargetFound = (targetIndex) => {
+  const video = getMainVideo()
+
+  if (!video) {
+    return
+  }
+
+  const nextSrc = resolveVideoByTarget(targetIndex)
+
+  if (video.getAttribute('src') !== nextSrc) {
+    clearCanPlayHandler()
+    video.pause()
+    video.removeAttribute('src')
+    video.load()
+
+    video.setAttribute('src', nextSrc)
+    video.load()
+
+    const playWhenReady = () => {
+      video
+        .play()
+        .then(() => {
+          if (userInteracted.value) {
+            video.muted = false
+            video.volume = 1
+          }
+        })
+        .catch((error) => {
+          console.warn('Autoplay error:', error)
+        })
+    }
+
+    canPlayHandler.value = playWhenReady
+    video.addEventListener('canplay', playWhenReady, { once: true })
+    return
+  }
+
+  video.play().catch((error) => {
+    console.warn('Replay error:', error)
+  })
+}
+
+const onTargetLost = () => {
+  const video = getMainVideo()
+
+  if (!video) {
+    return
+  }
+
+  clearCanPlayHandler()
+  video.pause()
+  video.currentTime = 0
+}
+
+onBeforeUnmount(() => {
+  cleanupVideo()
+
+  const sceneEl = sceneRef.value
+  const mindarSystem = sceneEl?.systems?.['mindar-image-system']
+
+  if (mindarSystem?.stop) {
+    mindarSystem.stop()
+  }
 })
 </script>
 
 <template>
   <main>
     <section class="ar-experience">
-      <img class="ar-bg" :src="arBackgroundImage" alt="AR Background" />
-      <div class="ar-overlay"></div>
+      <img v-if="!hasStarted" class="ar-bg" :src="arBackgroundImage" alt="AR Background" />
+      <div v-if="!hasStarted" class="ar-overlay"></div>
 
-      <div class="ar-modal">
+      <div v-if="showPopup" class="ar-modal">
         <h2>Trải nghiệm AR</h2>
         <p>Nhấn "Bắt đầu" để cho phép âm thanh và mở camera.</p>
-        <button class="btn btn-orange" type="button">Bắt đầu</button>
+        <button class="btn btn-orange" type="button" :disabled="isStarting" @click="startAR">
+          {{ isStarting ? 'Đang mở camera...' : 'Bắt đầu' }}
+        </button>
       </div>
+
+      <div v-if="hasStarted" id="ar-container" class="my-page">
+        <a-scene
+          ref="sceneRef"
+          mindar-image="imageTargetSrc: /targets.mind; maxTrack: 1"
+          color-space="sRGB"
+          renderer="colorManagement: true, physicallyCorrectLights"
+          vr-mode-ui="enabled: false"
+          device-orientation-permission-ui="enabled: false"
+          embedded
+        >
+          <a-assets>
+            <video
+              id="main-video"
+              ref="videoRef"
+              preload="auto"
+              muted
+              loop
+              playsinline
+              webkit-playsinline
+              crossorigin="anonymous"
+            ></video>
+          </a-assets>
+
+          <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+          <template v-for="i in TARGET_COUNT" :key="`target-${i}`">
+            <a-entity
+              :mindar-image-target="`targetIndex: ${i - 1}`"
+              @targetFound="() => onTargetFound(i - 1)"
+              @targetLost="onTargetLost"
+            >
+              <a-plane
+                src="#main-video"
+                position="0 0 0"
+                rotation="0 0 0"
+                width="1"
+                height="0.681"
+              ></a-plane>
+            </a-entity>
+          </template>
+        </a-scene>
+      </div>
+
+      <p v-if="errorMessage" class="ar-error">{{ errorMessage }}</p>
     </section>
   </main>
 </template>
+
+<style scoped>
+#ar-container {
+  position: absolute;
+  inset: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden;
+  z-index: 0;
+}
+.my-page :deep(video) {
+  max-width: none !important;
+}
+
+.ar-error {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  z-index: 2;
+  transform: translateX(-50%);
+  margin: 0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  background: rgba(23, 23, 23, 0.85);
+  color: #fff;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+</style>
+
+<style>
+video[autoplay][muted][playsinline] {
+  max-width: none !important;
+}
+</style>

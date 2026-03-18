@@ -1,11 +1,14 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import PreorderSection from './PreorderSection.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const props = defineProps({
   heroMainImage: String,
   heroSmallImages: Array,
   aboutImage: String,
+  aboutPageImage: String,
   guideImage: String,
   guideSteps: Array,
   productCards: Array,
@@ -177,6 +180,13 @@ const onTrackTransitionEnd = () => {
   }
 }
 
+function goToAR() {
+  router.push({ name: 'ar' })
+}
+
+function goToAbout() {
+  router.push({ name: 'about' })
+}
 const updateViewportCards = () => {
   if (typeof window === 'undefined') {
     return
@@ -210,9 +220,9 @@ watch(
     <section class="hero section-beige">
       <div class="container hero-inner">
         <div class="hero-content">
-          <h1>Enjoy your <span>coffee</span><br />before your activity</h1>
-          <p>Boost your productivity and build your mood with a glass of coffee in the morning.</p>
-          <button class="btn btn-orange" type="button">Learn More</button>
+          <h1>Chơi mà học<br />Khám phá thế giới cùng <span>Mindora</span></h1>
+          <p>Đồ chơi khoa học bằng gỗ giúp trẻ phát triển tư duy, sáng tạo và khám phá khoa học một cách tự nhiên.</p>
+          <button class="btn btn-orange" type="button" @click="goToAR">AR Camera</button>
         </div>
 
         <div class="hero-gallery">
@@ -229,7 +239,7 @@ watch(
       <div class="container centered-block">
         <h2><span>Chúng tôi</span> là ai?</h2>
         <p>
-          Mindora là start-up giáo dục sáng tạo, chuyên mang đến những bộ đồ chơi gỗ cao cấp giúp trẻ 5–15 tuổi khám phá
+          Mindora là start-up giáo dục sáng tạo, chuyên mang đến những bộ đồ chơi gỗ cao cấp giúp trẻ 5–12 tuổi khám phá
           khoa học một cách thú vị và chủ động.
           Chúng tôi thiết kế các mô hình thu nhỏ về thiên văn, địa lý, vật lý, sinh học để trẻ tự tay lắp ráp bằng trí
           tưởng tượng và logic của mình.
@@ -240,11 +250,11 @@ watch(
           Chúng tôi kết hợp chất liệu gỗ tự nhiên bền vững với công nghệ hiện đại để tạo nên hành trình khám phá khoa
           học sống động.
         </p>
-        <button class="btn btn-orange" type="button">Về Mindora</button>
+        <button class="btn btn-orange" type="button" @click="goToAbout">Về Mindora</button>
 
         <div class="about-images">
           <img :src="aboutImage" alt="About product" />
-          <img :src="aboutImage" alt="About product" />
+          <img :src="aboutPageImage" alt="About product" />
         </div>
       </div>
     </section>

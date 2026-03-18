@@ -2,7 +2,7 @@
   <section class="section-beige preorder">
     <div class="container centered-block">
       <h2><span>Đăng ký</span> PreOrder Sản phẩm</h2>
-      <button class="btn btn-orange" type="button">ĐI TỚI CHECKING</button>
+      <!-- <button class="btn btn-orange" type="button">ĐI TỚI CHECKING</button> -->
       <p>Hoặc điền vào mẫu thông tin dưới đây của chúng tôi</p>
 
       <form class="preorder-form" @submit.prevent>
