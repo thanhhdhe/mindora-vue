@@ -183,7 +183,9 @@ const onTrackTransitionEnd = () => {
 function goToAR() {
   router.push({ name: 'ar' })
 }
-
+function goToProducts() {
+  router.push({ name: 'featured' })
+}
 function goToAbout() {
   router.push({ name: 'about' })
 }
@@ -291,7 +293,7 @@ watch(
           kế đổi mới,
           kết hợp thủ công mỹ nghệ và công nghệ AR để tạo trải nghiệm giáo dục hấp dẫn.
         </p>
-        <button class="btn btn-orange" type="button">Sản phẩm AR</button>
+        <button class="btn btn-orange" type="button" @click="goToProducts">Sản phẩm AR</button>
 
         <div class="product-grid">
           <article v-for="(card, index) in productCards" :key="index" class="product-card">

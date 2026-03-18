@@ -16,18 +16,24 @@ import about from '@/assets/images/about.png'
 import aboutPage from '@/assets/images/about_page.png'
 import vision1 from '@/assets/images/vision1.png'
 import vision2 from '@/assets/images/vision2.png'
+import chickenImage from '@/assets/images/products/chicken.jpg'
+import butterflyImage from '@/assets/images/products/butterfly.jpg'
+import humanBodyImage from '@/assets/images/products/human_body.jpg'
+import solarSystemImage from '@/assets/images/products/solar_system.jpg'
+import vietnamMapImage from '@/assets/images/products/vietnam_map.jpg'
+import smartBoxImage from '@/assets/images/products/smart_box.jpg'
+import lineFollowerImage from '@/assets/images/products/line_follower.jpg'
+import mechanicalImage from '@/assets/images/products/mechanical.jpg'
+
 const heroMainImage = bigHeroImage
 const heroSmallImages = [
   smallImage1,
   smallImage2,
   smallImage3
 ]
-const productImage = 'https://www.figma.com/api/mcp/asset/4827fdfe-42fa-4356-8fb7-176396a29c63'
 const guideImage = phone
 const aboutImage = about
 const aboutPageImage = aboutPage
-const featuredPageImage = 'https://www.figma.com/api/mcp/asset/a0276e73-47d1-420d-b783-1634b9deca23'
-const arBackgroundImage = 'https://www.figma.com/api/mcp/asset/41a644a9-3b81-493e-9c2a-7fc3b4d7a158'
 const valueIcon01 = value01
 const valueIcon02 = value02
 const valueIcon03 = value03
@@ -61,15 +67,50 @@ export const guideSteps = [
   }
 ]
 
-export const productCards = Array.from({ length: 4 }).map(() => ({
-  title: 'Gradient Website Development',
-  image: productImage
-}))
 
-export const featuredCards = Array.from({ length: 12 }).map(() => ({
-  title: 'Gradient Website Development',
-  image: featuredPageImage
-}))
+
+// data gốc (mỗi item có image riêng)
+const products = [
+  {
+    title: "Vòng đời của Gà",
+    image: chickenImage
+  },
+  {
+    title: "Vòng đời của Bướm",
+    image: butterflyImage
+  },
+  {
+    title: "Cấu tạo cơ thể người đơn giản",
+    image: humanBodyImage
+  },
+  {
+    title: "Hệ Mặt Trời",
+    image: solarSystemImage
+  },
+  {
+    title: "Bản đồ Việt Nam",
+    image: vietnamMapImage
+  },
+  {
+    title: "Hộp tiết kiệm Thông minh",
+    image: smartBoxImage
+  },
+  {
+    title: "Xe tự động dò đường",
+    image: lineFollowerImage
+  },
+  {
+    title: "Truyền động cơ khí",
+    image: mechanicalImage
+  }
+]
+
+// giữ đúng format bạn đang dùng
+export const productCards = products.slice(0, 4)
+
+export const featuredCards = Array.from({ length: 12 }).map((_, i) => {
+  return products[i % products.length]
+})
 
 export const testimonials = [
   {
@@ -168,5 +209,5 @@ export const featuredPageProps = {
 }
 
 export const arPageProps = {
-  arBackgroundImage
+  aboutPageImage,
 }

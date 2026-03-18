@@ -2,7 +2,7 @@
 import { nextTick, onBeforeUnmount, ref } from 'vue'
 
 defineProps({
-  arBackgroundImage: String
+  aboutPageImage: String
 })
 
 const TARGET_COUNT = 20
@@ -196,7 +196,7 @@ onBeforeUnmount(() => {
 <template>
   <main>
     <section class="ar-experience">
-      <img v-if="!hasStarted" class="ar-bg" :src="arBackgroundImage" alt="AR Background" />
+      <img v-if="!hasStarted" class="ar-bg" :src="aboutPageImage" alt="AR Background" />
       <div v-if="!hasStarted" class="ar-overlay"></div>
 
       <div v-if="showPopup" class="ar-modal">
