@@ -27,7 +27,16 @@ const resetForm = () => {
   formData.phone = ''
   formData.message = ''
 }
-
+const formatVNTime = (date) =>
+  new Intl.DateTimeFormat('vi-VN', {
+    timeZone: 'Asia/Ho_Chi_Minh',
+    hour: '2-digit',
+    minute: '2-digit',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).format(new Date(date))
+  
 const submitPreorderForm = async () => {
   clearStatus()
 
@@ -49,7 +58,7 @@ const submitPreorderForm = async () => {
     phone: formData.phone.trim(),
     message: formData.message.trim(),
     source: 'mindora-preorder-form',
-    submittedAt: new Date().toISOString()
+    submittedAt: formatVNTime(new Date())
   }).toString()
 
   try {

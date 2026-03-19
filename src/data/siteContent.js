@@ -81,15 +81,17 @@ const products = [
   },
   {
     title: "Cấu tạo cơ thể người đơn giản",
-    image: humanBodyImage
+    image: humanBodyImage,
+    isTall: true
+  },
+  {
+    title: "Bản đồ Việt Nam",
+    image: vietnamMapImage,
+    isTall: true
   },
   {
     title: "Hệ Mặt Trời",
     image: solarSystemImage
-  },
-  {
-    title: "Bản đồ Việt Nam",
-    image: vietnamMapImage
   },
   {
     title: "Hộp tiết kiệm Thông minh",
@@ -108,7 +110,7 @@ const products = [
 // giữ đúng format bạn đang dùng
 export const productCards = products.slice(0, 4)
 
-export const featuredCards = Array.from({ length: 12 }).map((_, i) => {
+export const featuredCards = Array.from({ length: 8 }).map((_, i) => {
   return products[i % products.length]
 })
 

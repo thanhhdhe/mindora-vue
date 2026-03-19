@@ -94,12 +94,8 @@ const filteredCards = computed(() => {
                             src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/external-search-whatsapp-flatart-icons-outline-flatarticons.png"
                             alt="external-search-whatsapp-flatart-icons-outline-flatarticons" />
 
-                        <input
-                            id="featured-search-input"
-                            v-model="searchInput"
-                            type="text"
-                            placeholder="Nhập tối thiểu 2 ký tự để tìm kiếm"
-                        />
+                        <input id="featured-search-input" v-model="searchInput" type="text"
+                            placeholder="Nhập tối thiểu 2 ký tự để tìm kiếm" />
                     </label>
                     <button class="btn btn-orange" type="button" @click="clearSearch">Xóa lọc</button>
                 </div>
@@ -109,7 +105,8 @@ const filteredCards = computed(() => {
                 <p v-if="isSearchActive && !filteredCards.length">Không tìm thấy sản phẩm phù hợp.</p>
 
                 <div class="featured-grid">
-                    <article v-for="(card, index) in filteredCards" :key="index" class="product-card featured-card">
+                    <article v-for="(card, index) in filteredCards" :key="index" class="product-card featured-card"
+                        :class="{ 'card-tall': card.isTall }">
                         <img :src="card.image" :alt="card.title" />
                         <h3>{{ card.title }}</h3>
                     </article>
