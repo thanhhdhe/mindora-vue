@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Manrope:wght@500&family=Montserrat:wght@400;500;700&family=Rubik:wght@700&display=swap');
 
 :root {
-  --primary: #ff902b;
-  --secondary: #2f2105;
-  --beige: #f6ebda;
+  --primary: #6c90dc;
+  --secondary: #4e64af;
+  --beige: #cfe3ff;
   --text-soft: #7e7d7a;
   --text-muted: #717171;
   --white: #ffffff;
@@ -332,7 +332,8 @@ a {
   gap: 24px;
 }
 .hero-gallery img:first-child {
-object-fit: contain;
+  background: linear-gradient(44deg, #eddfd4, #f7f2ed);
+  object-fit: contain;
 }
 .hero-gallery img {
   width: 180px;
@@ -771,7 +772,7 @@ object-fit: contain;
 }
 
 .avatar {
-  border: 6px solid #e5e5e5;
+  border: 6px solid #6c90dc6b;
   position: absolute;
   top: 0;
   left: 24px;
@@ -836,7 +837,8 @@ object-fit: contain;
 }
 
 .pagination-dots .active {
-  background: #2f2105;
+  transform: scale(1.3);
+  background: var(--secondary);
 }
 
 .preorder>.container>p {
@@ -969,7 +971,10 @@ object-fit: contain;
   font-size: 14px;
   outline: none;
 }
-
+.newsletter-input input::placeholder {
+  color: #d9dbe1;
+  opacity: 1;
+}
 .newsletter-input button {
   border: 0;
   background: transparent;
